@@ -1,5 +1,7 @@
 package com.hcd.invoiceserver.domain;
 
+import com.asentinel.common.orm.FetchType;
+import com.asentinel.common.orm.mappers.Child;
 import com.asentinel.common.orm.mappers.Column;
 import com.asentinel.common.orm.mappers.PkColumn;
 import com.asentinel.common.orm.mappers.Table;
@@ -9,28 +11,30 @@ import java.time.LocalDate;
 @Table("Invoices")
 public class Invoice {
 
-    public static final String COL_NUMBER = "number";
+    public static final String COL_NUMBER = "Number";
+    public static final String COL_STATUS = "Status";
+    public static final String COL_TOTAL = "Total";
 
-    @PkColumn("id")
+    @PkColumn("Id")
     private int id;
 
     @Column(value = COL_NUMBER)
     private String number;
 
-    @Column("date")
+    @Column("Date")
     private LocalDate date;
 
-    @Column("vendor")
+    @Child(fkName = "VendorId", fetchType = FetchType.LAZY)
     private Vendor vendor;
 
-    @Column("service")
-    private Service service;
+    @Child(fkName = "ServiceTypeId", fetchType = FetchType.LAZY)
+    private ServiceType serviceType;
 
-    @Column("status")
+    @Column(value = COL_STATUS)
     private InvoiceStatus status;
 
-    @Column("amount")
-    private double amount;
+    @Column("Total")
+    private double total;
 
     // needed by the ORM
     protected Invoice() {
@@ -69,12 +73,12 @@ public class Invoice {
         this.vendor = vendor;
     }
 
-    public Service getService() {
-        return service;
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
     }
 
     public InvoiceStatus getStatus() {
@@ -85,12 +89,12 @@ public class Invoice {
         this.status = status;
     }
 
-    public double getAmount() {
-        return amount;
+    public double getTotal() {
+        return total;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     @Override
@@ -100,9 +104,9 @@ public class Invoice {
                 ", number=" + number +
                 ", date=" + date +
                 ", vendor=" + vendor +
-                ", service=" + service +
+                ", serviceType=" + serviceType +
                 ", status=" + status +
-                ", amount=" + amount +
+                ", total=" + total +
                 '}';
     }
 }

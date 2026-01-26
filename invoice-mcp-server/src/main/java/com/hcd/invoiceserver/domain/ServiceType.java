@@ -4,8 +4,8 @@ import com.asentinel.common.orm.mappers.Column;
 import com.asentinel.common.orm.mappers.PkColumn;
 import com.asentinel.common.orm.mappers.Table;
 
-@Table("Vendors")
-public class Vendor {
+@Table("ServiceTypes")
+public class ServiceType {
 
     @PkColumn("id")
     private int id;
@@ -30,7 +30,7 @@ public class Vendor {
     }
 
     public String toString() {
-        return "Vendor {" +
+        return "ServiceType {" +
                 "id=" + id +
                 ", name=" + name +
                 '}';

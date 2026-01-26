@@ -1,7 +1,7 @@
 package com.hcd.invoiceserver.domain;
 
 public enum InvoiceStatus {
-    REVIEWED,
+    UNDER_REVIEW,
     APPROVED,
     PAID
 }
