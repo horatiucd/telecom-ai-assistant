@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Telecom Assistant</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="bg-body-tertiary app-page">
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1 text-white">
+            Telecom AI Assistant
+        </span>
+    </div>
+</nav>
+
+<main class="container py-4 app-main">
+    <div class="card shadow-sm chat-card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="fw-semibold">Chat</div>
+            <div class="d-flex align-items-center gap-2">
+                <form th:action="@{/chat/clear}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-danger btn-sm">Clear</button>
+                </form>
+                <div class="text-secondary small" th:text="|Messages: ${#lists.size(messages)}|"></div>
+            </div>
+        </div>
+
+        <div class="card-body chat-window chat-body" id="chatWindow">
+            <div th:if="${#lists.isEmpty(messages)}" class="text-center text-secondary py-5">
+                Ask something like: “Show my last invoice” or “Explain my phone plan”.
+            </div>
+
+            <div th:each="m : ${messages}" class="mb-3">
+                <div class="d-flex" th:classappend="${m.role().name() == 'USER'} ? 'justify-content-end' : 'justify-content-start'">
+                    <div class="p-3 rounded-3"
+                         th:classappend="${m.role().name() == 'USER'} ? 'bg-primary text-white' : 'bg-light border'"
+                         style="max-width: 75%">
+                        <div class="small opacity-75 mb-1" th:text="${m.role().name() == 'USER' ? 'You' : 'Assistant'}"></div>
+                        <div class="msg" th:text="${m.content()}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <form th:action="@{/chat}" method="post" class="row g-2 align-items-center" id="chatForm">
+                <div class="col-12 col-md-10">
+                    <label for="questionInput" class="visually-hidden">Message</label>
+                    <input name="question" class="form-control" placeholder="Type your message…" autocomplete="off" autofocus id="questionInput" aria-label="Message">
+                </div>
+                <div class="col-12 col-md-2 d-grid">
+                    <button type="submit" class="btn btn-success" id="sendBtn" disabled>
+                        <span class="send-label">Send</span>
+                        <span class="send-progress d-none">
+                            <span class="spinner-border spinner-border-sm align-text-bottom" role="status" aria-hidden="true"></span>
+                            <span class="ms-2">Sending…</span>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="col-12">
+                    <div class="text-secondary small d-none" id="sendHint">
+                        Waiting for the assistant…
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer class="app-navbar text-white-50 border-top" style="padding: .35rem 0;">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="small">Powered by HCD</span>
+        <span class="small">&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span></span>
+    </div>
+</footer>
+
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

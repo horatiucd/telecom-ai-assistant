@@ -1,0 +1,54 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.app-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main area fills remaining space between header and footer */
+.app-main {
+  flex: 1 1 auto;
+  min-height: 0; /* allow children to size/scroll correctly */
+}
+
+/* Let the container/page keep fixed dimensions (no accidental overflow) */
+.app-main.container {
+  display: flex;
+}
+
+/* Chat card should stretch to fill the available height in main */
+.chat-card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Chat body is the scroll container */
+.chat-body {
+  flex: 1 1 auto;
+  min-height: 0; /* critical for nested flex scrolling */
+  overflow-y: auto;
+  background: var(--bs-body-bg);
+}
+
+/* Keep the class for semantics; scrolling happens via .chat-body */
+.chat-window {
+  height: auto;
+}
+
+.msg {
+  white-space: pre-wrap;
+}
+
+.app-navbar {
+  background-color: #495057;
+}
