@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .name("API key")
                 .id(apiKeyId)
                 .secret(apiKeySecret)
-                .build();;
+                .build();
 
         return new InMemoryApiKeyEntityRepository<>(List.of(apiKey));
     }
