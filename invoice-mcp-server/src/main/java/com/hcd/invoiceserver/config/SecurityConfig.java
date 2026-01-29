@@ -35,7 +35,6 @@ public class SecurityConfig {
         return new InMemoryApiKeyEntityRepository<>(List.of(apiKey));
     }
 
-    //"telecom-x-api-key": api-key-id.api-key-secret
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth ->
@@ -43,7 +42,7 @@ public class SecurityConfig {
                 .with(McpApiKeyConfigurer.mcpServerApiKey(),
                         apiKeyConfig ->
                                 apiKeyConfig.apiKeyRepository(apiKeyRepository())
-                                        .headerName("telecom-invoice-x-api-key"))
+                                        .headerName("invoice-x-api-key"))
                 .build();
     }
 }

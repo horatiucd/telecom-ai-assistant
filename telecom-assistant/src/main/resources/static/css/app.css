@@ -13,7 +13,7 @@ body {
   flex-direction: column;
 }
 
-/* Main area fills remaining space between header and footer */
+/* Main area fills remaining space between name and footer */
 .app-main {
   flex: 1 1 auto;
   min-height: 0; /* allow children to size/scroll correctly */
