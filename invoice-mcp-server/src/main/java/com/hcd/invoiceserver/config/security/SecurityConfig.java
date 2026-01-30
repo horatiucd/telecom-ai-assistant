@@ -1,38 +1,30 @@
-package com.hcd.invoiceserver.config;
+package com.hcd.invoiceserver.config.security;
 
+import com.asentinel.common.orm.OrmOperations;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntity;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository;
-import org.springaicommunity.mcp.security.server.apikey.memory.ApiKeyEntityImpl;
-import org.springaicommunity.mcp.security.server.apikey.memory.InMemoryApiKeyEntityRepository;
 import org.springaicommunity.mcp.security.server.config.McpApiKeyConfigurer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${api.key.id}")
-    private String apiKeyId;
+    private OrmOperations orm;
 
-    @Value("${api.key.secret}")
-    private String apiKeySecret;
+    @Autowired
+    public void setOrm(OrmOperations orm) {
+        this.orm = orm;
+    }
 
     @Bean
-    ApiKeyEntityRepository<ApiKeyEntity> apiKeyRepository() {
-        ApiKeyEntity apiKey = ApiKeyEntityImpl.builder()
-                .name("API key")
-                .id(apiKeyId)
-                .secret(apiKeySecret)
-                .build();
-
-        return new InMemoryApiKeyEntityRepository<>(List.of(apiKey));
+    ApiKeyEntityRepository<DbApiKeyEntityRepository.InvoiceApiKeyEntity> apiKeyRepository() {
+        return new DbApiKeyEntityRepository(orm);
     }
 
     @Bean

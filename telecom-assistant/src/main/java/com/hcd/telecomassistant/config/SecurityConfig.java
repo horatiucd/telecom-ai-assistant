@@ -1,8 +1,5 @@
 package com.hcd.telecomassistant.config;
 
-import com.hcd.telecomassistant.config.support.ApiKeyHeader;
-import com.hcd.telecomassistant.config.support.McpServerResolver;
-import com.hcd.telecomassistant.config.support.UrlMcpServerResolver;
 import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
 import io.modelcontextprotocol.common.McpTransportContext;
 import org.slf4j.Logger;

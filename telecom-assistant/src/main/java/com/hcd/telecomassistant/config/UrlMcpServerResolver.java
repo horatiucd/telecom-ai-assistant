@@ -1,4 +1,4 @@
-package com.hcd.telecomassistant.config.support;
+package com.hcd.telecomassistant.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
