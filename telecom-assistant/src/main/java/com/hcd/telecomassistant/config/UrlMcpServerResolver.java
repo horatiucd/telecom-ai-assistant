@@ -49,7 +49,7 @@ public class UrlMcpServerResolver extends McpServerResolver<ApiKeyHeader> {
     }
 
     /**
-     * Match on scheme/host/port.
+     * Match on scheme/host/port/path.
      */
     static boolean isSameOrigin(URI uri1, URI uri2) {
         if (uri1 == null || uri2 == null) {
@@ -73,7 +73,16 @@ public class UrlMcpServerResolver extends McpServerResolver<ApiKeyHeader> {
 
         int port1 = normalizePort(uri1);
         int port2 = normalizePort(uri2);
-        return port1 == port2;
+        if (port1 != port2) {
+            return false;
+        }
+
+        String path1 = uri1.getPath();
+        String path2 = uri2.getPath();
+        if (scheme1 == null && scheme2 != null) {
+            return false;
+        }
+        return path1.equals(path2);
     }
 
     static int normalizePort(URI uri) {

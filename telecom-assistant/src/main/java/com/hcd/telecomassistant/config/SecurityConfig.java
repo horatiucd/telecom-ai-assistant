@@ -17,13 +17,16 @@ public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Value("${mcp.server.invoice.api.key.id}")
-    private String invoiceMcpApiKeyId;
+    private String mcpInvoiceApiKeyId;
 
     @Value("${mcp.server.invoice.api.key.secret}")
-    private String invoiceMcpApiKeySecret;
+    private String mcpInvoiceApiKeySecret;
 
     @Value("${spring.ai.mcp.client.streamable-http.connections.invoice.url}")
-    private String invoiceMcpUrl;
+    private String mcpInvoiceUrl;
+
+    @Value("${spring.ai.mcp.client.streamable-http.connections.invoice.endpoint}")
+    private String mcpInvoiceEndpoint;
 
     @Bean
     McpSyncClientCustomizer syncClientCustomizer() {
@@ -34,9 +37,9 @@ public class SecurityConfig {
     @Bean
     McpServerResolver<ApiKeyHeader> serverResolver() {
         return new UrlMcpServerResolver(1,null,
-                invoiceMcpUrl,
+                String.format("%s%s", mcpInvoiceUrl, mcpInvoiceEndpoint),
                 new ApiKeyHeader("invoice-x-api-key",
-                        String.format("%s.%s", invoiceMcpApiKeyId, invoiceMcpApiKeySecret))
+                        String.format("%s.%s", mcpInvoiceApiKeyId, mcpInvoiceApiKeySecret))
         );
     }
 
