@@ -24,9 +24,10 @@ public abstract class McpServerResolver<T> {
             return Optional.empty();
         }
 
+        log.info("[Resolver {}]: Checking request towards {}.", order, uri);
         Optional<T> result = resolveSpecific(uri);
         if (result.isPresent()) {
-            log.info("[Resolver {}]: MCP server resolved for URI '{}'.", order, uri);
+            log.info("[Resolver {}]: MCP server resolved for URI {}.", order, uri);
             return result;
         }
 
@@ -34,8 +35,8 @@ public abstract class McpServerResolver<T> {
             log.info("[Resolver {}]: No next resolver configured.", order);
             return Optional.empty();
         }
-        log.info("[Resolver {}]: MCP server not resolved for Identity not confirmed for URI {}. Delegating to {}.",
-                order, uri, nextResolver.getClass().getSimpleName());
+        log.info("[Resolver {}]: MCP server not resolved for URI {}. Delegating to [Resolver {}].",
+                order, uri, nextResolver.order);
         return nextResolver.resolve(uri);
     }
 

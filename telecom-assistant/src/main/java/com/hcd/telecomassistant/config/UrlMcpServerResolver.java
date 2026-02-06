@@ -25,10 +25,10 @@ public class UrlMcpServerResolver extends McpServerResolver<ApiKeyHeader> {
     @Override
     protected Optional<ApiKeyHeader> resolveSpecific(URI uri) {
         if (isServerRequest(uri)) {
-            log.info("[Resolver {}]: Request URI '{}' is for MCP server at URL '{}'.", order(), uri, serverUrl);
+            log.info("[Resolver {}]: Request to URI {} is for MCP server at URL {}.", order(), uri, serverUrl);
             return Optional.of(header);
         }
-        log.info("[Resolver {}]: Request URI '{}' isn't for MCP server at URL '{}'.", order(), uri, serverUrl);
+        log.info("[Resolver {}]: Request to URI {} isn't for MCP server at URL {}.", order(), uri, serverUrl);
         return Optional.empty();
     }
 

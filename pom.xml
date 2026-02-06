@@ -18,6 +18,7 @@
 
     <modules>
         <module>invoice-mcp-server</module>
+        <module>vendor-mcp-server</module>
         <module>telecom-assistant</module>
     </modules>
 
