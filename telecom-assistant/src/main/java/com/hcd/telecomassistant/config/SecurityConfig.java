@@ -68,8 +68,6 @@ public class SecurityConfig {
         return (builder, method, endpoint, body, context) -> {
             log.info("MCP Client request: method={}, endpoint={}, body={}", method, endpoint, body);
 
-            // this tenant might use multiple MCP servers, at every request,
-            // determine: the MCP server name, the MCP server api key id and the MCP server api key secret
             serverResolver()
                     .resolve(endpoint)
                     .ifPresent(apiKeyHeader -> builder.header(apiKeyHeader.name(), apiKeyHeader.value()));
