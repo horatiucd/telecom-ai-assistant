@@ -1,7 +1,6 @@
 package com.hcd.telecomassistant.controller;
 
 import com.hcd.telecomassistant.service.ChatAssistant;
-import com.hcd.telecomassistant.service.ChatMessageHistory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -13,17 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ChatController {
 
     private final ChatAssistant assistant;
-    private final ChatMessageHistory history;
 
-    public ChatController(ChatAssistant assistant,
-                          ChatMessageHistory history) {
+    public ChatController(ChatAssistant assistant) {
         this.assistant = assistant;
-        this.history = history;
     }
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("messages", history.messages());
+        model.addAttribute("messages", assistant.chatMessages());
         return "chat";
     }
 
@@ -33,15 +29,16 @@ public class ChatController {
             return "redirect:/";
         }
 
-        history.userMessage(question);
+        assistant.addMessage(ChatMessage.Type.USER, question);
         var answer = assistant.call(question);
-        history.assistantMessage(answer);
+        assistant.addMessage(ChatMessage.Type.ASSISTANT, answer);
+
         return "redirect:/";
     }
 
     @PostMapping("/chat/clear")
     public String clear() {
-        history.clear();
+        assistant.clearChatMessages();
         return "redirect:/";
     }
 }

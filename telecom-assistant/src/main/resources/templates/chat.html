@@ -35,11 +35,11 @@
             </div>
 
             <div th:each="m : ${messages}" class="mb-3">
-                <div class="d-flex" th:classappend="${m.role().name() == 'USER'} ? 'justify-content-end' : 'justify-content-start'">
+                <div class="d-flex" th:classappend="${m.type().name() == 'USER'} ? 'justify-content-end' : 'justify-content-start'">
                     <div class="p-3 rounded-3"
-                         th:classappend="${m.role().name() == 'USER'} ? 'bg-primary text-white' : 'bg-light border'"
+                         th:classappend="${m.type().name() == 'USER'} ? 'bg-primary text-white' : 'bg-light border'"
                          style="max-width: 75%">
-                        <div class="small opacity-75 mb-1" th:text="${m.role().name() == 'USER' ? 'You' : 'Assistant'}"></div>
+                        <div class="small opacity-75 mb-1" th:text="${m.type().name() == 'USER' ? 'You' : 'Assistant'}"></div>
                         <div class="msg" th:text="${m.content()}"></div>
                     </div>
                 </div>
@@ -57,14 +57,14 @@
                         <span class="send-label">Send</span>
                         <span class="send-progress d-none">
                             <span class="spinner-border spinner-border-sm align-text-bottom" role="status" aria-hidden="true"></span>
-                            <span class="ms-2">Sending…</span>
+                            <span class="ms-2">Sending ...</span>
                         </span>
                     </button>
                 </div>
 
                 <div class="col-12">
                     <div class="text-secondary small d-none" id="sendHint">
-                        Waiting for the assistant…
+                        Assistant is writing ...
                     </div>
                 </div>
             </form>

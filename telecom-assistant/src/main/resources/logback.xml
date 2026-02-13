@@ -12,6 +12,7 @@
 	<logger name="org.flywaydb.core.internal.database" level="INFO" />
 
 	<logger name="org.springframework" level="WARN" />
+	<logger name="org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor" level="DEBUG" />
 	<logger name="org.springframework.ai.mcp" level="TRACE" />
 	<logger name="io.modelcontextprotocol.client.transport" level="TRACE" />
 
