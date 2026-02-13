@@ -1,5 +1,6 @@
 package com.hcd.telecomassistant.service;
 
+import com.hcd.telecomassistant.advisor.TokenUsageAdvisor;
 import com.hcd.telecomassistant.controller.ChatMessage;
 import com.hcd.telecomassistant.controller.ChatMessage.Type;
 import org.slf4j.Logger;
@@ -40,7 +41,8 @@ public class ChatAssistant {
                     """)
                 .defaultToolCallbacks(toolCallbackProvider)
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).order(0).build(),
-                        SimpleLoggerAdvisor.builder().order(1).build())
+                        TokenUsageAdvisor.builder().order(1).build(),
+                        SimpleLoggerAdvisor.builder().order(2).build())
                 .build();
 
         Arrays.stream(toolCallbackProvider.getToolCallbacks())
