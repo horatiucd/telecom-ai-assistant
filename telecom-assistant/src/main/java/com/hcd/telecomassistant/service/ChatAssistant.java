@@ -24,13 +24,13 @@ public class ChatAssistant {
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
-    private final ChatHistory chatHistory;
+    private final Conversation conversation;
 
     public ChatAssistant(ChatClient.Builder builder,
                          ToolCallbackProvider toolCallbackProvider,
-                         ChatHistory chatHistory,
+                         Conversation conversation,
                          ChatMemory chatMemory) {
-        this.chatHistory = chatHistory;
+        this.conversation = conversation;
         this.chatMemory = chatMemory;
 
         chatClient = builder
@@ -47,7 +47,7 @@ public class ChatAssistant {
                 .forEach(callback -> log.info("Tool callback available: {}", callback.getToolDefinition()));
     }
 
-    public String call(String request) {
+    public String ask(String request) {
         log.info("Request:\n {}", request);
 
         var response = chatClient.prompt()
@@ -59,8 +59,8 @@ public class ChatAssistant {
         return response;
     }
 
-    public List<ChatMessage> chatMessages() {
-        //return chatHistory.messages();
+    public List<ChatMessage> conversationMessages() {
+        //return conversation.messages();
         return chatMemory.get(DEFAULT_CONVERSATION_ID).stream()
                 .filter(msg -> msg.getMessageType() == MessageType.USER ||
                         msg.getMessageType() == MessageType.ASSISTANT)
@@ -69,12 +69,12 @@ public class ChatAssistant {
                 .toList();
     }
 
-    public void addMessage(Type type, String content) {
-        chatHistory.addMessage(type, content);
+    public void storeConversationMessage(Type type, String content) {
+        conversation.addMessage(type, content);
     }
 
-    public void clearChatMessages() {
-        chatHistory.clear();
+    public void clearConversationMessages() {
+        conversation.clear();
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
     }
 }

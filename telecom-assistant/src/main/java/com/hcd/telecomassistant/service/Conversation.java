@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class ChatHistory {
+public class Conversation {
 
     private final List<ChatMessage> messages = Collections.synchronizedList(new ArrayList<>());
 

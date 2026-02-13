@@ -19,7 +19,7 @@ public class ChatController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("messages", assistant.chatMessages());
+        model.addAttribute("messages", assistant.conversationMessages());
         return "chat";
     }
 
@@ -29,16 +29,16 @@ public class ChatController {
             return "redirect:/";
         }
 
-        assistant.addMessage(ChatMessage.Type.USER, question);
-        var answer = assistant.call(question);
-        assistant.addMessage(ChatMessage.Type.ASSISTANT, answer);
+        assistant.storeConversationMessage(ChatMessage.Type.USER, question);
+        var answer = assistant.ask(question);
+        assistant.storeConversationMessage(ChatMessage.Type.ASSISTANT, answer);
 
         return "redirect:/";
     }
 
     @PostMapping("/chat/clear")
     public String clear() {
-        assistant.clearChatMessages();
+        assistant.clearConversationMessages();
         return "redirect:/";
     }
 }
