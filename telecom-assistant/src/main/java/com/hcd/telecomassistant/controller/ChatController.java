@@ -20,6 +20,7 @@ public class ChatController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("messages", assistant.conversationMessages());
+        model.addAttribute("tokens", assistant.lastRequestTotalTokens());
         return "chat";
     }
 
@@ -29,9 +30,9 @@ public class ChatController {
             return "redirect:/";
         }
 
-        assistant.storeConversationMessage(ChatMessage.Type.USER, question);
+        assistant.storeUserMessage(question);
         var answer = assistant.ask(question);
-        assistant.storeConversationMessage(ChatMessage.Type.ASSISTANT, answer);
+        assistant.storeAssistantMessage(answer);
 
         return "redirect:/";
     }

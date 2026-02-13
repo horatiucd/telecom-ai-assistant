@@ -65,11 +65,12 @@ public class TokenUsageAdvisor implements BaseAdvisor {
                                     AdvisorChain advisorChain) {
         try {
             var json = MAPPER.writeValueAsString(chatClientResponse.chatResponse());
-            var promptTokens = JsonPath.read(json, "$.metadata.usage.promptTokens");
-            var completionTokens = JsonPath.read(json, "$.metadata.usage.completionTokens");
-            var totalTokens = JsonPath.read(json, "$.metadata.usage.totalTokens");
+            Integer promptTokens = JsonPath.read(json, "$.metadata.usage.promptTokens");
+            Integer completionTokens = JsonPath.read(json, "$.metadata.usage.completionTokens");
+            Integer totalTokens = JsonPath.read(json, "$.metadata.usage.totalTokens");
             log.debug("Response: promptTokens = {}, completionTokens = {}, totalTokens = {}.",
                     promptTokens, completionTokens, totalTokens);
+
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

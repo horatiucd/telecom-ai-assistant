@@ -9,12 +9,19 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.messages.AbstractMessage;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.chat.metadata.ChatResponseMetadata;
+import org.springframework.ai.chat.metadata.Usage;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.springframework.ai.chat.memory.ChatMemory.DEFAULT_CONVERSATION_ID;
 
@@ -22,6 +29,8 @@ import static org.springframework.ai.chat.memory.ChatMemory.DEFAULT_CONVERSATION
 public class ChatAssistant {
 
     private static final Logger log = LoggerFactory.getLogger(ChatAssistant.class);
+
+    private final AtomicInteger requestTotalTokens = new AtomicInteger(0);
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
@@ -40,25 +49,44 @@ public class ChatAssistant {
                         Provide short, meaningful answers.
                     """)
                 .defaultToolCallbacks(toolCallbackProvider)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).order(0).build(),
-                        TokenUsageAdvisor.builder().order(1).build(),
-                        SimpleLoggerAdvisor.builder().order(2).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory)
+                                .order(0)
+                                .build(),
+                        TokenUsageAdvisor.builder()
+                                .order(1)
+                                .build(),
+                        SimpleLoggerAdvisor.builder()
+                                .order(2)
+                                .build())
                 .build();
 
         Arrays.stream(toolCallbackProvider.getToolCallbacks())
                 .forEach(callback -> log.info("Tool callback available: {}", callback.getToolDefinition()));
     }
 
-    public String ask(String request) {
-        log.info("Request:\n {}", request);
+    public String ask(String question) {
+        log.info("Question:\n {}", question);
 
-        var response = chatClient.prompt()
-                .user(request)
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(question)
                 .call()
-                .content();
+                .chatResponse();
 
-        log.info("Response:\n {}", response);
-        return response;
+        String text = Optional.ofNullable(chatResponse)
+                .map(ChatResponse::getResult)
+                .map(Generation::getOutput)
+                .map(AbstractMessage::getText)
+                .orElse(null);
+
+        int totalTokens = Optional.ofNullable(chatResponse)
+                .map(ChatResponse::getMetadata)
+                .map(ChatResponseMetadata::getUsage)
+                .map(Usage::getTotalTokens)
+                .orElse(0);
+        requestTotalTokens.set(totalTokens);
+
+        log.info("Answer:\n {}", text);
+        return text;
     }
 
     public List<ChatMessage> conversationMessages() {
@@ -71,8 +99,16 @@ public class ChatAssistant {
                 .toList();
     }
 
-    public void storeConversationMessage(Type type, String content) {
-        conversation.addMessage(type, content);
+    public int lastRequestTotalTokens() {
+        return requestTotalTokens.get();
+    }
+
+    public void storeUserMessage(String content) {
+        conversation.addMessage(Type.USER, content);
+    }
+
+    public void storeAssistantMessage(String answer) {
+        conversation.addMessage(Type.ASSISTANT, answer);
     }
 
     public void clearConversationMessages() {
