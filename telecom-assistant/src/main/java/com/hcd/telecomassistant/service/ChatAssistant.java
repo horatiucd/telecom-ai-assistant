@@ -30,17 +30,14 @@ public class ChatAssistant {
 
     private static final Logger log = LoggerFactory.getLogger(ChatAssistant.class);
 
-    private final AtomicInteger requestTotalTokens = new AtomicInteger(0);
+    private final AtomicInteger conversationTokens = new AtomicInteger(0);
 
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
-    private final Conversation conversation;
 
     public ChatAssistant(ChatClient.Builder builder,
                          ToolCallbackProvider toolCallbackProvider,
-                         Conversation conversation,
                          ChatMemory chatMemory) {
-        this.conversation = conversation;
         this.chatMemory = chatMemory;
 
         chatClient = builder
@@ -65,8 +62,6 @@ public class ChatAssistant {
     }
 
     public String ask(String question) {
-        log.info("Question:\n {}", question);
-
         ChatResponse chatResponse = chatClient.prompt()
                 .user(question)
                 .call()
@@ -78,41 +73,31 @@ public class ChatAssistant {
                 .map(AbstractMessage::getText)
                 .orElse(null);
 
-        int totalTokens = Optional.ofNullable(chatResponse)
+        int tokens = Optional.ofNullable(chatResponse)
                 .map(ChatResponse::getMetadata)
                 .map(ChatResponseMetadata::getUsage)
                 .map(Usage::getTotalTokens)
                 .orElse(0);
-        requestTotalTokens.set(totalTokens);
+        conversationTokens.addAndGet(tokens);
 
-        log.info("Answer:\n {}", text);
         return text;
     }
 
     public List<ChatMessage> conversationMessages() {
-        //return conversation.messages();
         return chatMemory.get(DEFAULT_CONVERSATION_ID).stream()
                 .filter(msg -> msg.getMessageType() == MessageType.USER ||
                         msg.getMessageType() == MessageType.ASSISTANT)
-                .map(msg -> new ChatMessage(msg.getMessageType() == MessageType.USER ? Type.USER : ChatMessage.Type.ASSISTANT,
+                .map(msg -> new ChatMessage(msg.getMessageType() == MessageType.USER ? Type.USER : Type.ASSISTANT,
                         msg.getText()))
                 .toList();
     }
 
-    public int lastRequestTotalTokens() {
-        return requestTotalTokens.get();
+    public int conversationTokens() {
+        return conversationTokens.get();
     }
 
-    public void storeUserMessage(String content) {
-        conversation.addMessage(Type.USER, content);
-    }
-
-    public void storeAssistantMessage(String answer) {
-        conversation.addMessage(Type.ASSISTANT, answer);
-    }
-
-    public void clearConversationMessages() {
-        conversation.clear();
+    public void clearConversation() {
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
+        conversationTokens.set(0);
     }
 }

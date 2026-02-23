@@ -18,6 +18,8 @@
 
 	<logger name="org.thymeleaf" level="INFO" />
 
+	<logger name="com.jayway.jsonpath" level="INFO" />
+
 	<logger name="com.hcd.telecomassistant.advisor.TokenUsageAdvisor" level="DEBUG" />
 
 	<root level="DEBUG">

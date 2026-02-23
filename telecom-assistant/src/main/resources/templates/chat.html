@@ -20,9 +20,9 @@
 <main class="container py-4 app-main">
     <div class="card shadow-sm chat-card">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <div class="fw-semibold">Chat</div>
+            <div class="fw-semibold">Conversation</div>
             <div class="d-flex align-items-center gap-2">
-                <div class="text-secondary small" th:text="|Messages: ${#lists.size(messages)}, Total Tokens (last request): ${tokens}|"></div>
+                <div class="text-secondary small" th:text="|Messages: ${#lists.size(messages)}, Tokens: ${tokens}|"></div>
                 <form th:action="@{/chat/clear}" method="post" class="m-0">
                     <button type="submit" class="btn btn-danger btn-sm">Clear</button>
                 </form>
@@ -57,15 +57,9 @@
                         <span class="send-label">Send</span>
                         <span class="send-progress d-none">
                             <span class="spinner-border spinner-border-sm align-text-bottom" role="status" aria-hidden="true"></span>
-                            <span class="ms-2">Sending ...</span>
+                            <span class="ms-2">Patience ...</span>
                         </span>
                     </button>
-                </div>
-
-                <div class="col-12">
-                    <div class="text-secondary small d-none" id="sendHint">
-                        Patience ...
-                    </div>
                 </div>
             </form>
         </div>
