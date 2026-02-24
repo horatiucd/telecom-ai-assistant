@@ -1,11 +1,5 @@
 package com.hcd.telecomassistant.advisor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.jayway.jsonpath.JsonPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClientRequest;
@@ -17,19 +11,22 @@ import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.metadata.ChatResponseMetadata;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.tokenizer.JTokkitTokenCountEstimator;
 import org.springframework.ai.tokenizer.TokenCountEstimator;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TokenUsageAdvisor implements BaseAdvisor {
 
     private static final Logger log = LoggerFactory.getLogger(TokenUsageAdvisor.class);
 
-    private static final ObjectMapper MAPPER = new ObjectMapper()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .registerModule(new JavaTimeModule());
+    private final AtomicInteger promptTokenCount = new AtomicInteger(0);
+    private final AtomicInteger completionTokenCount = new AtomicInteger(0);
+    private final AtomicInteger totalTokenCount = new AtomicInteger(0);
 
     private final int order;
     private final TokenCountEstimator tokenCountEstimator;
@@ -40,8 +37,7 @@ public class TokenUsageAdvisor implements BaseAdvisor {
     }
 
     @Override
-    public ChatClientRequest before(ChatClientRequest chatClientRequest,
-                                    AdvisorChain advisorChain) {
+    public ChatClientRequest before(ChatClientRequest chatClientRequest, AdvisorChain advisorChain) {
         List<Message> messages = chatClientRequest.prompt().getInstructions();
 
         int tokenCount = messages.stream()
@@ -55,25 +51,31 @@ public class TokenUsageAdvisor implements BaseAdvisor {
                     return tokenCountEstimator.estimate(text);
                 })
                 .sum();
-        log.debug("Request: {} messages ~ {} tokens.", messages.size(), tokenCount);
+        log.debug("Request: {} messages ~ {} estimated tokens.", messages.size(), tokenCount);
 
         return chatClientRequest;
     }
 
     @Override
-    public ChatClientResponse after(ChatClientResponse chatClientResponse,
-                                    AdvisorChain advisorChain) {
-        try {
-            var json = MAPPER.writeValueAsString(chatClientResponse.chatResponse());
-            Integer promptTokens = JsonPath.read(json, "$.metadata.usage.promptTokens");
-            Integer completionTokens = JsonPath.read(json, "$.metadata.usage.completionTokens");
-            Integer totalTokens = JsonPath.read(json, "$.metadata.usage.totalTokens");
-            log.debug("Response: promptTokens = {}, completionTokens = {}, totalTokens = {}.",
-                    promptTokens, completionTokens, totalTokens);
+    public ChatClientResponse after(ChatClientResponse chatClientResponse, AdvisorChain advisorChain) {
+        Optional.ofNullable(chatClientResponse.chatResponse())
+                .map(ChatResponse::getMetadata)
+                .map(ChatResponseMetadata::getUsage)
+                .ifPresent(usage -> {
+                    int currentPrompt = usage.getPromptTokens();
+                    int currentCompletion = usage.getCompletionTokens();
+                    int currentTotal = usage.getTotalTokens();
 
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+                    log.info("Current tokens - \nPrompt: {} \nCompletion: {} \nTotal: {}",
+                            currentPrompt, currentCompletion, currentTotal);
+
+                    int accPrompt = promptTokenCount.addAndGet(currentPrompt);
+                    int accCompletion = completionTokenCount.addAndGet(currentCompletion);
+                    int accTotal = totalTokenCount.addAndGet(currentTotal);
+
+                    log.info("Accumulated tokens -\nPrompt: {} \nCompletion: {} \nTotal: {}",
+                            accPrompt, accCompletion, accTotal);
+                });
 
         return chatClientResponse;
     }
