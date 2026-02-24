@@ -73,7 +73,7 @@ public class TokenUsageAdvisor implements BaseAdvisor {
                     int accCompletion = completionTokenCount.addAndGet(currentCompletion);
                     int accTotal = totalTokenCount.addAndGet(currentTotal);
 
-                    log.info("Accumulated tokens -\nPrompt: {} \nCompletion: {} \nTotal: {}",
+                    log.info("Accumulated tokens - \nPrompt: {} \nCompletion: {} \nTotal: {}",
                             accPrompt, accCompletion, accTotal);
                 });
 
