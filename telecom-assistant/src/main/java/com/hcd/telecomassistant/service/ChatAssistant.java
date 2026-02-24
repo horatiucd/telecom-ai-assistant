@@ -38,9 +38,7 @@ public class ChatAssistant {
         tokenUsageAdvisor = new TokenUsageAdvisor(1);
 
         chatClient = builder
-                .defaultSystem("""
-                    You are a helpful Telecom AI assistant. Provide short, meaningful answers.
-                    """)
+                .defaultSystem("You are a helpful Telecom AI assistant. Provide short, meaningful answers.")
                 .defaultToolCallbacks(toolCallbackProvider)
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
                         tokenUsageAdvisor,
