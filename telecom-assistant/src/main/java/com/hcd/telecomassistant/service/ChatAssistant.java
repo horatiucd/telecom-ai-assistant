@@ -10,11 +10,13 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.ai.chat.memory.ChatMemory.DEFAULT_CONVERSATION_ID;
 
@@ -32,7 +34,8 @@ public class ChatAssistant {
                          ToolCallbackProvider toolCallbackProvider,
                          ChatMemory chatMemory) {
         this.chatMemory = chatMemory;
-        this.tokenUsageAdvisor = new TokenUsageAdvisor(1);
+
+        tokenUsageAdvisor = new TokenUsageAdvisor(1);
 
         chatClient = builder
                 .defaultSystem("""
@@ -40,12 +43,15 @@ public class ChatAssistant {
                     """)
                 .defaultToolCallbacks(toolCallbackProvider)
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        this.tokenUsageAdvisor,
+                        tokenUsageAdvisor,
                         new MessageLoggerAdvisor(2))
                 .build();
 
-        Arrays.stream(toolCallbackProvider.getToolCallbacks())
-                .forEach(callback -> log.info("Tool callback available: {}", callback.getToolDefinition()));
+        log.info("Available tools:\n{}",
+                Arrays.stream(toolCallbackProvider.getToolCallbacks())
+                        .map(ToolCallback::getToolDefinition)
+                        .map(Object::toString)
+                        .collect(Collectors.joining("\n")));
     }
 
     public String ask(String question) {
