@@ -24,7 +24,7 @@ public class ChatController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("messages", assistant.conversationMessages());
-        model.addAttribute("tokens", assistant.conversationTokens());
+        model.addAttribute("tokens", assistant.totalTokens());
         return "chat";
     }
 
@@ -33,12 +33,11 @@ public class ChatController {
         if (!StringUtils.hasText(question)) {
             return "redirect:/";
         }
-        log.info("Question:\n {}", question);
+        log.info("USER:\n\t{}", question);
 
         var answer = assistant.ask(question);
 
-        log.info("Answer:\n {}", answer);
-        log.info("Conversation tokens: {}", assistant.conversationTokens());
+        log.info("ASSISTANT:\n\t{}", answer);
 
         return "redirect:/";
     }

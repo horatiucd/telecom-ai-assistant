@@ -1,5 +1,6 @@
 package com.hcd.telecomassistant.service;
 
+import com.hcd.telecomassistant.advisor.MessageLoggerAdvisor;
 import com.hcd.telecomassistant.advisor.TokenUsageAdvisor;
 import com.hcd.telecomassistant.controller.ChatMessage;
 import com.hcd.telecomassistant.controller.ChatMessage.Type;
@@ -7,21 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.messages.AbstractMessage;
 import org.springframework.ai.chat.messages.MessageType;
-import org.springframework.ai.chat.metadata.ChatResponseMetadata;
-import org.springframework.ai.chat.metadata.Usage;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.springframework.ai.chat.memory.ChatMemory.DEFAULT_CONVERSATION_ID;
 
@@ -30,31 +23,25 @@ public class ChatAssistant {
 
     private static final Logger log = LoggerFactory.getLogger(ChatAssistant.class);
 
-    private final AtomicInteger conversationTokens = new AtomicInteger(0);
-
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
+
+    private final TokenUsageAdvisor tokenUsageAdvisor;
 
     public ChatAssistant(ChatClient.Builder builder,
                          ToolCallbackProvider toolCallbackProvider,
                          ChatMemory chatMemory) {
         this.chatMemory = chatMemory;
+        this.tokenUsageAdvisor = new TokenUsageAdvisor(1);
 
         chatClient = builder
                 .defaultSystem("""
-                        You are a helpful Telecom AI assistant.
-                        Provide short, meaningful answers.
+                    You are a helpful Telecom AI assistant. Provide short, meaningful answers.
                     """)
                 .defaultToolCallbacks(toolCallbackProvider)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory)
-                                .order(0)
-                                .build(),
-                        TokenUsageAdvisor.builder()
-                                .order(1)
-                                .build(),
-                        SimpleLoggerAdvisor.builder()
-                                .order(2)
-                                .build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        this.tokenUsageAdvisor,
+                        new MessageLoggerAdvisor(2))
                 .build();
 
         Arrays.stream(toolCallbackProvider.getToolCallbacks())
@@ -62,25 +49,10 @@ public class ChatAssistant {
     }
 
     public String ask(String question) {
-        ChatResponse chatResponse = chatClient.prompt()
+        return chatClient.prompt()
                 .user(question)
                 .call()
-                .chatResponse();
-
-        String text = Optional.ofNullable(chatResponse)
-                .map(ChatResponse::getResult)
-                .map(Generation::getOutput)
-                .map(AbstractMessage::getText)
-                .orElse(null);
-
-        int tokens = Optional.ofNullable(chatResponse)
-                .map(ChatResponse::getMetadata)
-                .map(ChatResponseMetadata::getUsage)
-                .map(Usage::getTotalTokens)
-                .orElse(0);
-        conversationTokens.addAndGet(tokens);
-
-        return text;
+                .content();
     }
 
     public List<ChatMessage> conversationMessages() {
@@ -92,12 +64,12 @@ public class ChatAssistant {
                 .toList();
     }
 
-    public int conversationTokens() {
-        return conversationTokens.get();
-    }
-
     public void clearConversation() {
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
-        conversationTokens.set(0);
+        tokenUsageAdvisor.clearUsage();
+    }
+
+    public int totalTokens() {
+        return tokenUsageAdvisor.totalTokens();
     }
 }

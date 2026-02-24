@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
-import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.client.advisor.api.AdvisorChain;
 import org.springframework.ai.chat.client.advisor.api.BaseAdvisor;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -31,7 +30,7 @@ public class TokenUsageAdvisor implements BaseAdvisor {
     private final int order;
     private final TokenCountEstimator tokenCountEstimator;
 
-    private TokenUsageAdvisor(int order) {
+    public TokenUsageAdvisor(int order) {
         this.order = order;
         tokenCountEstimator = new JTokkitTokenCountEstimator();
     }
@@ -66,14 +65,14 @@ public class TokenUsageAdvisor implements BaseAdvisor {
                     int currentCompletion = usage.getCompletionTokens();
                     int currentTotal = usage.getTotalTokens();
 
-                    log.info("Current tokens - \nPrompt: {} \nCompletion: {} \nTotal: {}",
+                    log.info("Current tokens - \nPrompt: {} Completion: {} Total: {}",
                             currentPrompt, currentCompletion, currentTotal);
 
                     int accPrompt = promptTokenCount.addAndGet(currentPrompt);
                     int accCompletion = completionTokenCount.addAndGet(currentCompletion);
                     int accTotal = totalTokenCount.addAndGet(currentTotal);
 
-                    log.info("Accumulated tokens - \nPrompt: {} \nCompletion: {} \nTotal: {}",
+                    log.info("Accumulated tokens - \nPrompt: {} Completion: {} Total: {}",
                             accPrompt, accCompletion, accTotal);
                 });
 
@@ -85,22 +84,13 @@ public class TokenUsageAdvisor implements BaseAdvisor {
         return order;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public int totalTokens() {
+        return totalTokenCount.get();
     }
 
-    public static final class Builder {
-        private int order = Advisor.DEFAULT_CHAT_MEMORY_PRECEDENCE_ORDER;
-
-        private Builder() {}
-
-        public Builder order(int order) {
-            this.order = order;
-            return this;
-        }
-
-        public TokenUsageAdvisor build() {
-            return new TokenUsageAdvisor(order);
-        }
+    public void clearUsage() {
+        promptTokenCount.set(0);
+        completionTokenCount.set(0);
+        totalTokenCount.set(0);
     }
 }
