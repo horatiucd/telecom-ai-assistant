@@ -1,6 +1,10 @@
 package com.hcd.telecomassistant.config;
 
 import com.hcd.telecomassistant.config.props.McpServerApiKeyProperties;
+import com.hcd.telecomassistant.config.resolver.InvoiceMcpServerResolver;
+import com.hcd.telecomassistant.config.resolver.McpServerResolver;
+import com.hcd.telecomassistant.config.resolver.UrlMcpServerResolver;
+import com.hcd.telecomassistant.config.resolver.VendorMcpServerResolver;
 import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
 import io.modelcontextprotocol.common.McpTransportContext;
 import org.slf4j.Logger;
@@ -53,11 +57,9 @@ public class SecurityConfig {
         var mcpInvoice = mcpProps.get("invoice");
         var mcpVendor = mcpProps.get("vendor");
 
-        return new UrlMcpServerResolver(1,
-                new UrlMcpServerResolver(2,
-                        null,
-                        String.format("%s%s", mcpInvoice.url(), mcpInvoice.endpoint()),
-                        invoiceApiKeyHeader()),
+        return new VendorMcpServerResolver(new InvoiceMcpServerResolver(null,
+                                            String.format("%s%s", mcpInvoice.url(), mcpInvoice.endpoint()),
+                                            invoiceApiKeyHeader()),
                 String.format("%s%s", mcpVendor.url(), mcpVendor.endpoint()),
                 vendorApiKeyHeader()
         );

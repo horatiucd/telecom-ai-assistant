@@ -1,34 +1,34 @@
-package com.hcd.telecomassistant.config;
+package com.hcd.telecomassistant.config.resolver;
 
+import com.hcd.telecomassistant.config.ApiKeyHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.Optional;
 
-public class UrlMcpServerResolver extends McpServerResolver<ApiKeyHeader> {
+public class UrlMcpServerResolver extends AbstractMcpServerResolver<ApiKeyHeader> {
 
     private static final Logger log = LoggerFactory.getLogger(UrlMcpServerResolver.class);
 
     private final String serverUrl;
     private final ApiKeyHeader header;
 
-    public UrlMcpServerResolver(int order,
-                                McpServerResolver<ApiKeyHeader> nextResolver,
+    public UrlMcpServerResolver(McpServerResolver<ApiKeyHeader> nextResolver,
                                 String serverUrl,
                                 ApiKeyHeader header) {
-        super(order, nextResolver);
+        super(nextResolver);
         this.serverUrl = serverUrl;
         this.header = header;
     }
 
     @Override
-    protected Optional<ApiKeyHeader> resolveSpecific(URI uri) {
-        if (isServerRequest(uri)) {
-            log.info("[Resolver {}]: Request to URI {} is for MCP server at URL {}.", order(), uri, serverUrl);
+    protected Optional<ApiKeyHeader> resolveSpecific(URI endpoint) {
+        if (isServerRequest(endpoint)) {
+            log.info("[{}]: Target endpoint {} and config URL {} match.", id(), endpoint, serverUrl);
             return Optional.of(header);
         }
-        log.info("[Resolver {}]: Request to URI {} isn't for MCP server at URL {}.", order(), uri, serverUrl);
+        log.info("[{}]: Target endpoint {} and config URL {} don't match.", id(), endpoint, serverUrl);
         return Optional.empty();
     }
 
