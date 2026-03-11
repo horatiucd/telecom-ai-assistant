@@ -22,18 +22,18 @@ abstract class AbstractMcpServerResolver<T> implements McpServerResolver<T> {
             return Optional.empty();
         }
 
-        log.info("[{}]: Checking request towards {}.", id(), uri);
+        log.debug("[{}]: Checking request towards {}.", id(), uri);
         Optional<T> result = resolveSpecific(uri);
         if (result.isPresent()) {
-            log.info("[{}]: Resolved target endpoint {}.", id(), uri);
+            log.debug("[{}]: Resolved target endpoint {}.", id(), uri);
             return result;
         }
 
         if (next == null) {
-            log.info("[{}]: No next resolver configured.", id());
+            log.debug("[{}]: No next resolver configured.", id());
             return Optional.empty();
         }
-        log.info("[{}]: Target endpoint {} not resolved. Delegating to [{}].", id(), uri, next.id());
+        log.debug("[{}]: Target endpoint {} not resolved. Delegating to [{}].", id(), uri, next.id());
         return next.resolve(uri);
     }
 
