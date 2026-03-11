@@ -1,6 +1,7 @@
 package com.hcd.telecomassistant.config.resolver;
 
 import com.hcd.telecomassistant.config.ApiKeyHeader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -13,14 +14,11 @@ class UrlMcpServerResolverTest {
     private static final String SERVER_URL = "http://localhost:8080/api";
     private static final ApiKeyHeader HEADER = new ApiKeyHeader("X-Api-Key", "secret-123");
 
-    // --- constructor ---
+    private UrlMcpServerResolver singleResolver;
 
-    @Test
-    void constructor_parsesServerUrl() {
-        UrlMcpServerResolver resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
-
-        // Successfully constructed — no exception
-        assertNotNull(resolver);
+    @BeforeEach
+    void setUp() {
+        singleResolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
     }
 
     @Test
@@ -29,13 +27,10 @@ class UrlMcpServerResolverTest {
                 () -> new UrlMcpServerResolver(null, "://bad url", HEADER));
     }
 
-    // --- resolveSpecific (via resolve) ---
-
     @Test
     void resolve_returnsHeader_whenEndpointMatchesServerUri() {
-        var resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
-
-        Optional<ApiKeyHeader> result = resolver.resolve(URI.create(SERVER_URL));
+        var uri = URI.create(SERVER_URL);
+        Optional<ApiKeyHeader> result = singleResolver.resolve(uri);
 
         assertTrue(result.isPresent());
         assertEquals(HEADER, result.get());
@@ -43,23 +38,23 @@ class UrlMcpServerResolverTest {
 
     @Test
     void resolve_returnsEmpty_whenHostDiffers() {
-        var resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
+        var uri = URI.create("http://other-host:8080/api");
 
-        assertTrue(resolver.resolve(URI.create("http://other-host:8080/api")).isEmpty());
+        assertTrue(singleResolver.resolve(uri).isEmpty());
     }
 
     @Test
     void resolve_returnsEmpty_whenPortDiffers() {
-        var resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
+        var uri = URI.create("http://localhost:9090/api");
 
-        assertTrue(resolver.resolve(URI.create("http://localhost:9090/api")).isEmpty());
+        assertTrue(singleResolver.resolve(uri).isEmpty());
     }
 
     @Test
     void resolve_returnsEmpty_whenPathDiffers() {
-        var resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
+        var uri = URI.create("http://localhost:8080/other");
 
-        assertTrue(resolver.resolve(URI.create("http://localhost:8080/other")).isEmpty());
+        assertTrue(singleResolver.resolve(uri).isEmpty());
     }
 
     @Test
@@ -71,12 +66,8 @@ class UrlMcpServerResolverTest {
 
     @Test
     void resolve_returnsEmpty_whenUriIsNull() {
-        var resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
-
-        assertTrue(resolver.resolve(null).isEmpty());
+        assertTrue(singleResolver.resolve(null).isEmpty());
     }
-
-    // --- chain delegation ---
 
     @Test
     void resolve_delegatesToNext_whenCurrentDoesNotMatch() {
@@ -84,7 +75,9 @@ class UrlMcpServerResolverTest {
         var next = new UrlMcpServerResolver(null, "http://fallback:9090/path", nextHeader);
         var resolver = new UrlMcpServerResolver(next, SERVER_URL, HEADER);
 
-        Optional<ApiKeyHeader> result = resolver.resolve(URI.create("http://fallback:9090/path"));
+        var uri = URI.create("http://fallback:9090/path");
+
+        Optional<ApiKeyHeader> result = resolver.resolve(uri);
 
         assertTrue(result.isPresent());
         assertEquals(nextHeader, result.get());
@@ -95,15 +88,13 @@ class UrlMcpServerResolverTest {
         var next = new UrlMcpServerResolver(null, "http://fallback:9090/path", HEADER);
         var resolver = new UrlMcpServerResolver(next, SERVER_URL, HEADER);
 
-        assertTrue(resolver.resolve(URI.create("http://unknown:1234/x")).isEmpty());
-    }
+        var uri = URI.create("http://fallback:9090/other");
 
-    // --- id ---
+        assertTrue(resolver.resolve(uri).isEmpty());
+    }
 
     @Test
     void id_returnsUrlMcpServerResolver() {
-        var resolver = new UrlMcpServerResolver(null, SERVER_URL, HEADER);
-
-        assertEquals("UrlMcpServerResolver", resolver.id());
+        assertEquals("UrlMcpServerResolver", singleResolver.id());
     }
 }
