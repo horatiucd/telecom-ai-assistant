@@ -1,7 +1,6 @@
 package com.hcd.invoiceserver.config.security;
 
 import com.asentinel.common.orm.OrmOperations;
-import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntity;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository;
 import org.springaicommunity.mcp.security.server.config.McpApiKeyConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;

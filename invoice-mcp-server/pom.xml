@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.springaicommunity</groupId>
             <artifactId>mcp-server-security</artifactId>
-            <version>0.1.1</version>
+            <version>0.1.5</version>
         </dependency>
 
         <!-- Asentinel ORM handles the database access -->
