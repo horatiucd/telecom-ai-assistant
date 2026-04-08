@@ -24,7 +24,6 @@ public class ChatController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("messages", assistant.conversationMessages());
-        model.addAttribute("tokens", assistant.totalTokens());
         return "chat";
     }
 

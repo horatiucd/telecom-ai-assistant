@@ -1,7 +1,5 @@
 package com.hcd.telecomassistant.service;
 
-import com.hcd.telecomassistant.advisor.MessageLoggerAdvisor;
-import com.hcd.telecomassistant.advisor.TokenUsageAdvisor;
 import com.hcd.telecomassistant.controller.ChatMessage;
 import com.hcd.telecomassistant.controller.ChatMessage.Type;
 import org.slf4j.Logger;
@@ -10,13 +8,9 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
-import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.ai.chat.memory.ChatMemory.DEFAULT_CONVERSATION_ID;
 
@@ -28,28 +22,23 @@ public class ChatAssistant {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
 
-    private final TokenUsageAdvisor tokenUsageAdvisor;
-
     public ChatAssistant(ChatClient.Builder builder,
-                         ToolCallbackProvider toolCallbackProvider,
                          ChatMemory chatMemory) {
         this.chatMemory = chatMemory;
 
-        tokenUsageAdvisor = new TokenUsageAdvisor(1);
-
+        //TODO 2: Use ToolCallbackProvider as ChatClient's defaultToolCallbacks'
         chatClient = builder
                 .defaultSystem("You are a helpful Telecom AI assistant. Provide short, meaningful answers.")
-                .defaultToolCallbacks(toolCallbackProvider)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        tokenUsageAdvisor,
-                        new MessageLoggerAdvisor(2))
+//                .defaultToolCallbacks(toolCallbackProvider)
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
 
-        log.info("Available tools:\n{}",
-                Arrays.stream(toolCallbackProvider.getToolCallbacks())
-                        .map(ToolCallback::getToolDefinition)
-                        .map(Object::toString)
-                        .collect(Collectors.joining("\n")));
+        //TODO 3: Display the available tools
+//        log.info("Available tools:\n{}",
+//                Arrays.stream(toolCallbackProvider.getToolCallbacks())
+//                        .map(ToolCallback::getToolDefinition)
+//                        .map(Object::toString)
+//                        .collect(Collectors.joining("\n")));
     }
 
     public String ask(String question) {
@@ -70,10 +59,5 @@ public class ChatAssistant {
 
     public void clearConversation() {
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
-        tokenUsageAdvisor.clearUsage();
-    }
-
-    public int totalTokens() {
-        return tokenUsageAdvisor.totalTokens();
     }
 }
