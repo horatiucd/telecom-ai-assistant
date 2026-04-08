@@ -6,9 +6,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntity;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DbApiKeyEntityRepository implements ApiKeyEntityRepository<DbApiKeyEntityRepository.InvoiceApiKeyEntity> {
 
     private final OrmOperations orm;
