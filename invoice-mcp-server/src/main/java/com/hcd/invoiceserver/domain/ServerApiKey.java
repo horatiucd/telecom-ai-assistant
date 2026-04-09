@@ -4,7 +4,8 @@ import com.asentinel.common.orm.mappers.Column;
 import com.asentinel.common.orm.mappers.PkColumn;
 import com.asentinel.common.orm.mappers.Table;
 
-@Table("ServerApiKeys")
+//TODO 5 - Add the API key entity
+//@Table("ServerApiKeys")
 public class ServerApiKey {
 
     public static final String COL_SERVER = "Server";

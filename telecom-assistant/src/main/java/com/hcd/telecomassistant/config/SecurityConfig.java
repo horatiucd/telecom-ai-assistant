@@ -18,8 +18,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
-@Configuration
-@EnableConfigurationProperties({McpServerApiKeyProperties.class})
+//TODO 10 - Security configuration
+//@Configuration
+//@EnableConfigurationProperties({McpServerApiKeyProperties.class})
 public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
@@ -27,12 +28,12 @@ public class SecurityConfig {
     public McpStreamableHttpClientProperties mcpClientProps;
     public McpServerApiKeyProperties mcpServerApiKeys;
 
-    @Autowired
+    //@Autowired
     public void setMcpClientProps(McpStreamableHttpClientProperties mcpClientProps) {
         this.mcpClientProps = mcpClientProps;
     }
 
-    @Autowired
+    //@Autowired
     public void setMcpServerApiKeys(McpServerApiKeyProperties mcpServerApiKeys) {
         this.mcpServerApiKeys = mcpServerApiKeys;
     }

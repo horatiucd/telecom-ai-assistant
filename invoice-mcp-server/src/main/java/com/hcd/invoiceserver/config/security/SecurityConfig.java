@@ -1,5 +1,8 @@
 package com.hcd.invoiceserver.config.security;
 
+//TODO 6 - Add the security configuration
+
+/*
 import com.asentinel.common.orm.OrmOperations;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository;
 import org.springaicommunity.mcp.security.server.config.McpApiKeyConfigurer;
@@ -12,8 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+ */
 public class SecurityConfig {
 
+    /*
     private OrmOperations orm;
 
     @Autowired
@@ -36,4 +41,5 @@ public class SecurityConfig {
                                         .headerName("invoice-x-api-key"))
                 .build();
     }
+    */
 }

@@ -26,7 +26,8 @@ import java.util.Map;
  *
  * @see ApiKeyParams
  */
-@ConfigurationProperties(McpServerApiKeyProperties.CONFIG_PREFIX)
+//TODO 8.2 - MCP server API keys as properties
+//@ConfigurationProperties(McpServerApiKeyProperties.CONFIG_PREFIX)
 public class McpServerApiKeyProperties {
 
     public static final String CONFIG_PREFIX = "mcp.server.api-key";

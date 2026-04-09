@@ -1,5 +1,8 @@
 package com.hcd.vendorserver.config;
 
+//TODO 3 - Add the security configuration
+
+/*
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntity;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository;
 import org.springaicommunity.mcp.security.server.apikey.memory.ApiKeyEntityImpl;
@@ -16,8 +19,10 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
+*/
 public class SecurityConfig {
 
+    /*
     @Value("${api.key.id}")
     private String apiKeyId;
 
@@ -44,4 +49,5 @@ public class SecurityConfig {
                                         .headerName("vendor-x-api-key"))
                 .build();
     }
+    */
 }

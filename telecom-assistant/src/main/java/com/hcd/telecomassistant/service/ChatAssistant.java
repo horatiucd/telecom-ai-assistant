@@ -1,7 +1,5 @@
 package com.hcd.telecomassistant.service;
 
-import com.hcd.telecomassistant.advisor.MessageLoggerAdvisor;
-import com.hcd.telecomassistant.advisor.TokenUsageAdvisor;
 import com.hcd.telecomassistant.controller.ChatMessage;
 import com.hcd.telecomassistant.controller.ChatMessage.Type;
 import org.slf4j.Logger;
@@ -28,21 +26,15 @@ public class ChatAssistant {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
 
-    private final TokenUsageAdvisor tokenUsageAdvisor;
-
     public ChatAssistant(ChatClient.Builder builder,
                          ToolCallbackProvider toolCallbackProvider,
                          ChatMemory chatMemory) {
         this.chatMemory = chatMemory;
 
-        tokenUsageAdvisor = new TokenUsageAdvisor(1);
-
         chatClient = builder
                 .defaultSystem("You are a helpful Telecom AI assistant. Provide short, meaningful answers.")
                 .defaultToolCallbacks(toolCallbackProvider)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        tokenUsageAdvisor,
-                        new MessageLoggerAdvisor(2))
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
 
         log.info("Available tools:\n{}",
@@ -70,10 +62,5 @@ public class ChatAssistant {
 
     public void clearConversation() {
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
-        tokenUsageAdvisor.clearUsage();
-    }
-
-    public int totalTokens() {
-        return tokenUsageAdvisor.totalTokens();
     }
 }

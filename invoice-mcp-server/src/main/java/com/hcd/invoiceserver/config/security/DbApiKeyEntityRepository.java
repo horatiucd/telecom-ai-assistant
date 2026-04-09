@@ -1,14 +1,19 @@
 package com.hcd.invoiceserver.config.security;
 
+//TODO 7 - Implement the API key entity repository
+
+/*
 import com.asentinel.common.orm.OrmOperations;
 import com.hcd.invoiceserver.domain.ServerApiKey;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntity;
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository;
+*/
 
-public class DbApiKeyEntityRepository implements ApiKeyEntityRepository<DbApiKeyEntityRepository.InvoiceApiKeyEntity> {
+public class DbApiKeyEntityRepository /*implements ApiKeyEntityRepository<DbApiKeyEntityRepository.InvoiceApiKeyEntity>*/ {
 
+    /*
     private final OrmOperations orm;
 
     public DbApiKeyEntityRepository(OrmOperations orm) {
@@ -60,4 +65,5 @@ public class DbApiKeyEntityRepository implements ApiKeyEntityRepository<DbApiKey
             return new InvoiceApiKeyEntity(id, secret);
         }
     }
+    */
 }
