@@ -1,6 +1,6 @@
 package com.hcd.invoiceserver.config.security;
 
-//TODO 7 - Implement the API key entity repository
+//TODO 6.1 - Implement the API key entity repository
 
 /*
 import com.asentinel.common.orm.OrmOperations;

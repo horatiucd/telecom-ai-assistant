@@ -3,7 +3,6 @@ package com.hcd.telecomassistant.config;
 import com.hcd.telecomassistant.config.props.McpServerApiKeyProperties;
 import com.hcd.telecomassistant.config.resolver.InvoiceMcpServerResolver;
 import com.hcd.telecomassistant.config.resolver.McpServerResolver;
-import com.hcd.telecomassistant.config.resolver.UrlMcpServerResolver;
 import com.hcd.telecomassistant.config.resolver.VendorMcpServerResolver;
 import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
 import io.modelcontextprotocol.common.McpTransportContext;

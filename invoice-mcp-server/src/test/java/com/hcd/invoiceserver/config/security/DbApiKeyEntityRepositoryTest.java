@@ -1,5 +1,7 @@
 package com.hcd.invoiceserver.config.security;
 
+//TODO 6.2 - Integration test for DbApiKeyEntityRepository
+
 import com.asentinel.common.jdbc.flavors.postgres.PostgresJdbcFlavor;
 import com.asentinel.common.orm.OrmOperations;
 import com.hcd.invoiceserver.domain.ServerApiKey;
@@ -7,14 +9,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 class DbApiKeyEntityRepositoryTest {
 
+    /*
     @Autowired
     private DbApiKeyEntityRepository apiKeyRepository;
 
@@ -38,4 +41,5 @@ class DbApiKeyEntityRepositoryTest {
         Assertions.assertEquals(serverApiKey.getKeyId(), apiKey.getId());
         Assertions.assertEquals(serverApiKey.getKeySecret(), apiKey.getSecret());
     }
+    */
 }
