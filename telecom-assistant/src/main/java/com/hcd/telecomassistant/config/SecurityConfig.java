@@ -3,20 +3,15 @@ package com.hcd.telecomassistant.config;
 import com.hcd.telecomassistant.config.props.McpServerApiKeyProperties;
 import com.hcd.telecomassistant.config.resolver.InvoiceMcpServerResolver;
 import com.hcd.telecomassistant.config.resolver.McpServerResolver;
-import com.hcd.telecomassistant.config.resolver.UrlMcpServerResolver;
 import com.hcd.telecomassistant.config.resolver.VendorMcpServerResolver;
 import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
-import io.modelcontextprotocol.common.McpTransportContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.mcp.client.common.autoconfigure.properties.McpStreamableHttpClientProperties;
-import org.springframework.ai.mcp.customizer.McpSyncClientCustomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties({McpServerApiKeyProperties.class})
@@ -74,11 +69,5 @@ public class SecurityConfig {
                     .resolve(endpoint)
                     .ifPresent(apiKeyHeader -> builder.header(apiKeyHeader.name(), apiKeyHeader.value()));
         };
-    }
-
-    @Bean
-    McpSyncClientCustomizer syncClientCustomizer() {
-        return (name, spec) -> spec.transportContextProvider(() ->
-                McpTransportContext.create(Map.of("user", "horatiu")));
     }
 }

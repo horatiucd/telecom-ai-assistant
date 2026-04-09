@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//TODO 1: Add a new advisor to track the token usage
 public class TokenUsageAdvisor implements BaseAdvisor {
 
     private static final Logger log = LoggerFactory.getLogger(TokenUsageAdvisor.class);

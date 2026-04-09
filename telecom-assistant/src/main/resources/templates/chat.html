@@ -22,7 +22,9 @@
         <div class="card-header d-flex align-items-center justify-content-between">
             <div class="fw-semibold">Conversation</div>
             <div class="d-flex align-items-center gap-2">
-                <div class="text-secondary small" th:text="|Messages: ${#lists.size(messages)}, Tokens: ${tokens}|"></div>
+                <!-- TODO 5: Display the tokens counter -->
+<!--                <div class="text-secondary small" th:text="|Messages: ${#lists.size(messages)}, Tokens: ${tokens}|"></div>-->
+                <div class="text-secondary small" th:text="|Messages: ${#lists.size(messages)}|"></div>
                 <form th:action="@{/chat/clear}" method="post" class="m-0">
                     <button type="submit" class="btn btn-danger btn-sm">Clear</button>
                 </form>

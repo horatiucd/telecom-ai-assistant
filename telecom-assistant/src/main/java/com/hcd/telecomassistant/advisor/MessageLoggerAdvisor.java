@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//TODO 2: Add a new advisor to log the messages in a particula manner
 public class MessageLoggerAdvisor implements BaseAdvisor {
 
     private static final Logger log = LoggerFactory.getLogger(MessageLoggerAdvisor.class);

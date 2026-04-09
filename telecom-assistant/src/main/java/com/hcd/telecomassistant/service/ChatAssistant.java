@@ -28,21 +28,23 @@ public class ChatAssistant {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
 
-    private final TokenUsageAdvisor tokenUsageAdvisor;
+    //TODO 3: Plug in the advisors
+    //private final TokenUsageAdvisor tokenUsageAdvisor;
 
     public ChatAssistant(ChatClient.Builder builder,
                          ToolCallbackProvider toolCallbackProvider,
                          ChatMemory chatMemory) {
         this.chatMemory = chatMemory;
 
-        tokenUsageAdvisor = new TokenUsageAdvisor(1);
+        //tokenUsageAdvisor = new TokenUsageAdvisor(1);
 
         chatClient = builder
                 .defaultSystem("You are a helpful Telecom AI assistant. Provide short, meaningful answers.")
                 .defaultToolCallbacks(toolCallbackProvider)
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                        tokenUsageAdvisor,
-                        new MessageLoggerAdvisor(2))
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build()
+                        //,tokenUsageAdvisor,
+                        // new MessageLoggerAdvisor(2)
+                        )
                 .build();
 
         log.info("Available tools:\n{}",
@@ -70,10 +72,10 @@ public class ChatAssistant {
 
     public void clearConversation() {
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
-        tokenUsageAdvisor.clearUsage();
+        //tokenUsageAdvisor.clearUsage();
     }
 
-    public int totalTokens() {
-        return tokenUsageAdvisor.totalTokens();
-    }
+//    public int totalTokens() {
+//        return tokenUsageAdvisor.totalTokens();
+//    }
 }
