@@ -24,7 +24,7 @@ public class ChatController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("messages", assistant.conversationMessages());
-        //TODO 4: send the total tokes to UI
+        //TODO 4.1: send the total tokes to UI
         //model.addAttribute("tokens", assistant.totalTokens());
         return "chat";
     }

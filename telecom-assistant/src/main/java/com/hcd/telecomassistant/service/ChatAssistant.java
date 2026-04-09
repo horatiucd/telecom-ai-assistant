@@ -28,7 +28,7 @@ public class ChatAssistant {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
 
-    //TODO 3: Plug in the advisors
+    //TODO 3.1: Plug in the advisors
     //private final TokenUsageAdvisor tokenUsageAdvisor;
 
     public ChatAssistant(ChatClient.Builder builder,
@@ -47,6 +47,7 @@ public class ChatAssistant {
                         )
                 .build();
 
+        //TODO 3.2: May be removed as the available tools are logged at every request now
         log.info("Available tools:\n{}",
                 Arrays.stream(toolCallbackProvider.getToolCallbacks())
                         .map(ToolCallback::getToolDefinition)
@@ -70,6 +71,7 @@ public class ChatAssistant {
                 .toList();
     }
 
+    //TODO 3.3: Use the token advisor explicitly
     public void clearConversation() {
         chatMemory.clear(DEFAULT_CONVERSATION_ID);
         //tokenUsageAdvisor.clearUsage();
