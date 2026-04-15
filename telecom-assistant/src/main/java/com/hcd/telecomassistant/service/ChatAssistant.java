@@ -8,9 +8,13 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.ai.chat.memory.ChatMemory.DEFAULT_CONVERSATION_ID;
 
@@ -22,18 +26,17 @@ public class ChatAssistant {
     private final ChatClient chatClient;
     private final ChatMemory chatMemory;
 
+    //TODO 2: Use ToolCallbackProvider as ChatClient's defaultToolCallbacks'
     public ChatAssistant(ChatClient.Builder builder,
                          ChatMemory chatMemory) {
         this.chatMemory = chatMemory;
 
-        //TODO 2: Use ToolCallbackProvider as ChatClient's defaultToolCallbacks'
         chatClient = builder
                 .defaultSystem("You are a helpful Telecom AI assistant. Provide short, meaningful answers.")
 //                .defaultToolCallbacks(toolCallbackProvider)
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
 
-        //TODO 3: Display the available tools
 //        log.info("Available tools:\n{}",
 //                Arrays.stream(toolCallbackProvider.getToolCallbacks())
 //                        .map(ToolCallback::getToolDefinition)
