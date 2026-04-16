@@ -17,7 +17,7 @@ import java.util.Map;
 
 //TODO 10 - Security configuration
 //@Configuration
-//@EnableConfigurationProperties({McpServerApiKeyProperties.class})
+@EnableConfigurationProperties({McpServerApiKeyProperties.class})
 public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
