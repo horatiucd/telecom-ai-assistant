@@ -17,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class DbApiKeyEntityRepositoryTest {
-
     /*
-    @Autowired
     private DbApiKeyEntityRepository apiKeyRepository;
 
     @Autowired
