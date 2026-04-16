@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
-//TODO 10 - Security configuration
+//TODO 11 - Security configuration
 //@Configuration
 @EnableConfigurationProperties({McpServerApiKeyProperties.class})
 public class SecurityConfig {
