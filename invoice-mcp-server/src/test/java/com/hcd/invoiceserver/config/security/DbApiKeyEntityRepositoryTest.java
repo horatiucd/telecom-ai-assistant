@@ -6,6 +6,7 @@ import com.asentinel.common.jdbc.flavors.postgres.PostgresJdbcFlavor;
 import com.asentinel.common.orm.OrmOperations;
 import com.hcd.invoiceserver.domain.ServerApiKey;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,11 @@ class DbApiKeyEntityRepositoryTest {
     private OrmOperations orm;
 
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+    @BeforeEach
+    public void setUp() {
+        apiKeyRepository = new DbApiKeyEntityRepository(orm);
+    }
 
     @Test
     void provisionServerApiKey() {
