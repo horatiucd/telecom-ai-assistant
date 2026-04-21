@@ -153,5 +153,12 @@ Make sure:
 
 - Verify `OPEN_AI_J_API_KEY` is set.
 - Check the configured model in `telecom-assistant/src/main/resources/application.properties`:
-  - `spring.ai.openai.chat.options.model` (default is `gpt-5`)
+- `spring.ai.openai.chat.options.model` (default is `gpt-5`)
 
+## Step-by-step tutorial
+
+[From Prototype to Production: Building Business-Driven Spring AI Applications](https://imhoratiu.wordpress.com/2026/04/21/from-prototype-to-production-building-business-driven-spring-ai-applications/)
+
+- Build, test and integrate MCP server(s) - Spring AI MCP
+- Secure the MCP client-server communication - Spring AI Security and API Keys
+- Improve the integration – Spring AI Advisors
